@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --background: #090b0b;
+  --foreground: #e7e9e8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, a { -webkit-tap-highlight-color: transparent; }
+::selection { background: #24533a; color: #eef7f0; }
+
+.brand-mark { display: flex; height: 30px; width: 30px; align-items: center; justify-content: center; border: 1px solid #2e5941; border-radius: 9px; background: linear-gradient(145deg, #193323, #101a14); color: #78d6a5; }
+.nav-item { display: flex; min-height: 34px; align-items: center; gap: 10px; border-radius: 6px; padding: 0 9px; color: #8d9691; font-size: 11px; transition: background-color 140ms ease, color 140ms ease; }
+.nav-item:hover { background: #ffffff08; color: #d6ddd8; }
+.nav-item-active { background: #142019; color: #a4d9b8; }
+.nav-item-active:hover { background: #18271e; color: #c0e8ce; }
+.icon-button { display: inline-flex; height: 32px; width: 32px; align-items: center; justify-content: center; border-radius: 7px; color: #a4ada8; }
+.icon-button:hover { background: #ffffff0a; color: #e4e9e6; }
+.button-primary { min-height: 36px; border-radius: 7px; background: #b6e4c8; padding: 0 13px; color: #102015; font-size: 11px; font-weight: 600; transition: background-color 140ms ease; }
+.button-primary:hover { background: #d0f0dc; }
+.priority-dot { height: 6px; width: 6px; flex: 0 0 auto; border-radius: 50%; }
+.priority-green { background: #68d19a; box-shadow: 0 0 8px #68d19a4d; }
+.priority-blue { background: #6ea7d7; }
+.priority-violet { background: #a68ae3; }
+.goal-orb { position: absolute; right: 3%; top: -110px; height: 220px; width: 300px; border-radius: 100%; background: #2b754733; filter: blur(80px); pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}

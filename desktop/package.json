@@ -1,0 +1,58 @@
+{
+  "name": "careeros-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Windows desktop client for CareerOS",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "package:win": "node scripts/write-config.mjs && electron-builder --win nsis --x64 --publish never",
+    "package:mac": "node scripts/write-config.mjs && electron-builder --mac dmg zip --universal --publish never",
+    "package:linux": "node scripts/write-config.mjs && electron-builder --linux AppImage --x64 --publish never"
+  },
+  "build": {
+    "appId": "com.careeros.desktop",
+    "productName": "CareerOS",
+    "asar": true,
+    "files": [
+      "main.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build/app-config.json",
+        "to": "app-config.json"
+      }
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "artifactName": "CareerOS-${os}-${arch}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [{ "target": "dmg" }, { "target": "zip" }]
+    },
+    "linux": {
+      "category": "Office",
+      "target": [{ "target": "AppImage", "arch": ["x64"] }]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.3.0",
+    "electron-builder": "^26.18.0"
+  }
+}

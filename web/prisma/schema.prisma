@@ -1,0 +1,118 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  email        String        @unique
+  passwordHash String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  profile      UserProfile?
+  settings     UserSettings?
+  sessions     Session[]
+  studySessions StudySession[]
+  studyPlanItems StudyPlanItem[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@map("sessions")
+}
+
+model LoginThrottle {
+  key       String   @id
+  count     Int      @default(0)
+  resetAt   DateTime
+  updatedAt DateTime @updatedAt
+
+  @@index([resetAt])
+  @@map("login_throttles")
+}
+
+model StudySession {
+  id              String   @id @default(cuid())
+  userId          String
+  studyPlanItemId String?
+  title           String   @db.VarChar(120)
+  category        String   @db.VarChar(40)
+  durationMinutes Int
+  notes           String?  @db.VarChar(1000)
+  completedAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studyPlanItem   StudyPlanItem? @relation(fields: [studyPlanItemId], references: [id], onDelete: SetNull)
+
+  @@index([userId, completedAt])
+  @@index([userId, studyPlanItemId])
+  @@map("study_sessions")
+}
+
+model StudyPlanItem {
+  id              String   @id @default(cuid())
+  userId          String
+  title           String   @db.VarChar(120)
+  category        String   @db.VarChar(80)
+  plannedMinutes  Int
+  position        Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studySessions   StudySession[]
+
+  @@index([userId, position, createdAt])
+  @@map("study_plan_items")
+}
+
+model UserProfile {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  fullName           String?
+  education          String   @default("B.Tech Computer Science")
+  currentEmployer    String   @default("Cognizant")
+  experienceMonths   Int      @default(8)
+  previousExperience String   @default("Frontend/full-stack internship at tCognition")
+  skills             String[] @default(["JavaScript", "TypeScript", "React", "Next.js", "Node.js", "PostgreSQL"])
+  aiExperience       String   @default("Gemini API, RAG, Pinecone and AI application development")
+  primaryLanguage    String?
+  secondaryLanguage  String?
+  aiLanguage         String?
+  dsaLevel           String?
+  dailyMinutes       Int?
+  careerObjective    String   @default("SDE + AI Engineer")
+  targetSalaryLpa    Int      @default(50)
+  targetCompanies    String   @default("Product companies, global technology companies and well-funded engineering startups")
+  journeyStart       DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_profiles")
+}
+
+model UserSettings {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  timezone         String   @default("Asia/Kolkata")
+  restDays         Int[]    @default([])
+  sessionDuration  Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
+}
